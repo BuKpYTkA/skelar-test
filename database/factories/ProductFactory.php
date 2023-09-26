@@ -19,11 +19,11 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => $this->faker->text(),
+            'title' => $this->faker->word,
             'description' => $this->faker->sentence,
-            'price' => $this->faker->numberBetween(),
+            'price' => $this->faker->numberBetween(0, 100000),
             'category_id' => $this->faker->boolean ? Category::factory()->create()->getKey() : null,
-            'created_by' => User::factory()->create()->getKey()
+            'user_id' => User::factory()->create()->getKey()
         ];
     }
 }

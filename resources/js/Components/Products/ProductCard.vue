@@ -44,7 +44,7 @@
                 <p class="inline-block ml-auto px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                     {{ product.user.name }}</p>
             </div>
-            <div class="px-6 pb-2 flex justify-around mt-auto">
+            <div class="px-6 pb-2 flex justify-center gap-4 mt-auto">
                 <Link :href="route('products.update', {product: product.id})">
                     <button type="button"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">

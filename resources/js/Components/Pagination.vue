@@ -1,19 +1,90 @@
 <script lang="ts" setup>
     import {BasePaginator} from "@/types/BasePaginator";
     import {computed} from "vue";
+    import RightArrowIcon from "@/Components/Icons/RightArrowIcon.vue";
+    import LeftArrowIcon from "@/Components/Icons/LeftArrowIcon.vue";
+
+    const DEFAULT_NUMBER_OF_DYNAMIC_PAGES = 3;
+    const ACTIVE_PAGE_CLASS_LIST = 'relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm' +
+        ' font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2' +
+        ' focus-visible:outline-offset-2 focus-visible:outline-indigo-600';
+    const DEFAULT_PAGE_CLASS_LIST = 'relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900' +
+        ' ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex'
 
     const props = defineProps<{
-        paginator: BasePaginator
+        paginator: BasePaginator,
     }>();
 
+    const emit = defineEmits<{
+        (e: 'updated', value: number)
+    }>();
+
+    const isFirstPageActive = computed<boolean>((): boolean => {
+        return props.paginator.current_page === 1;
+    });
+
+    const isLastPageActive = computed<boolean>((): boolean => {
+        return props.paginator.current_page === props.paginator.last_page;
+    });
+
+    const activePagePosition = computed<number>((): number => {
+        if (!isFirstPageActive.value && !isLastPageActive.value) {
+            return defaultActivePagePosition.value
+        }
+        if (isFirstPageActive.value) {
+            return 1;
+        }
+
+        return currentNumberOfPages.value;
+    });
+
+    const defaultActivePagePosition = computed<number>((): number => {
+        return currentNumberOfPages.value % 2
+            ? (currentNumberOfPages.value + 1) / 2
+            : currentNumberOfPages.value / 2;
+    })
+
     const prevButtonClass = computed<string>((): string => {
-        return props.paginator.prev_page_url ? 'text-gray-600' : 'text-gray-200';
+        return props.paginator.prev_page_url ? 'text-gray-600' : 'text-gray-200 pagination_nav_disabled';
     });
 
-    const prevButtonUrl = computed<string>((): string => {
-        return props.paginator.prev_page_url || '#';
+    const nextButtonClass = computed<string>((): string => {
+        return props.paginator.next_page_url ? 'text-gray-600' : 'text-gray-200 pagination_nav_disabled';
     });
 
+    const showFirstDots = computed<boolean>((): boolean => {
+        return props.paginator.current_page - defaultActivePagePosition.value > 1;
+    });
+
+    const showFirstPage = computed<boolean>((): boolean => {
+        return !mainPageSet.value.includes(1);
+    });
+
+    const showLastPage = computed<boolean>((): boolean => {
+        return !mainPageSet.value.includes(props.paginator.last_page);
+    })
+
+    const showSecondDots = computed<boolean>((): boolean => {
+        return props.paginator.last_page - defaultActivePagePosition.value > props.paginator.current_page
+    });
+
+    const currentNumberOfPages = computed<number>((): number => {
+        return props.paginator.last_page > DEFAULT_NUMBER_OF_DYNAMIC_PAGES
+            ? DEFAULT_NUMBER_OF_DYNAMIC_PAGES
+            : props.paginator.last_page
+    })
+
+    const mainPageSet = computed<Array<number>>((): Array<number> => {
+        return [...Array(currentNumberOfPages.value).keys()].map(value =>
+            value + props.paginator.current_page - activePagePosition.value + 1
+        );
+    });
+
+    const setPage = (page: number) => {
+        if (page > 0 && page <= props.paginator.last_page) {
+            emit('updated', page);
+        }
+    }
 </script>
 
 <template>
@@ -38,39 +109,44 @@
             </div>
             <div>
                 <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-                    <a :href="prevButtonUrl"
+                    <a href="#"
+                       @click.prevent="setPage(paginator.current_page - 1)"
                        :class="prevButtonClass"
                        class="relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                         <span class="sr-only">Previous</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                  d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z"
-                                  clip-rule="evenodd"/>
-                        </svg>
+                        <LeftArrowIcon/>
                     </a>
-                    <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
-                    <a href="#" aria-current="page"
-                       class="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">1</a>
+                    <a v-if="showFirstPage"
+                       href="#"
+                       @click.prevent="setPage(1)"
+                       :class="[paginator.current_page === 1 ? ACTIVE_PAGE_CLASS_LIST : DEFAULT_PAGE_CLASS_LIST]"
+                       aria-current="page">
+                        1
+                    </a>
+                    <span v-if="showFirstDots"
+                          class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
+                    <a v-for="page in mainPageSet" :key="page"
+                       href="#"
+                       @click.prevent="setPage(page)"
+                       :class="[paginator.current_page === page ? ACTIVE_PAGE_CLASS_LIST : DEFAULT_PAGE_CLASS_LIST]"
+                       aria-current="page">
+                        {{ page }}
+                    </a>
+                    <span v-if="showSecondDots"
+                          class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
+                    <a v-if="showLastPage"
+                       href="#"
+                       @click.prevent="setPage(paginator.last_page)"
+                       aria-current="page"
+                       :class="[paginator.current_page === paginator.last_page ? ACTIVE_PAGE_CLASS_LIST : DEFAULT_PAGE_CLASS_LIST]">
+                        {{ paginator.last_page }}
+                    </a>
                     <a href="#"
-                       class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">2</a>
-                    <a href="#"
-                       class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">3</a>
-                    <span
-                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">...</span>
-                    <a href="#"
-                       class="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex">8</a>
-                    <a href="#"
-                       class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">9</a>
-                    <a href="#"
-                       class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">10</a>
-                    <a href="#"
-                       class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
+                       @click.prevent="setPage(paginator.current_page + 1)"
+                       :class="nextButtonClass"
+                       class="relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0">
                         <span class="sr-only">Next</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd"
-                                  d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z"
-                                  clip-rule="evenodd"/>
-                        </svg>
+                        <RightArrowIcon/>
                     </a>
                 </nav>
             </div>
@@ -78,6 +154,8 @@
     </div>
 </template>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .pagination_nav_disabled {
+        pointer-events: none;
+    }
 </style>

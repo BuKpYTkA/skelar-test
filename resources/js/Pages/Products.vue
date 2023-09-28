@@ -27,18 +27,18 @@
         return props.paginator.data;
     });
 
-    const onPageUpdated = (page: number) => {
+    const onPageUpdated = (page: number): void => {
         filter.value.page = page;
     };
 
-    const loadDataWithCurrentFilter = (preserveScroll: boolean = false) => {
+    const loadDataWithCurrentFilter = (preserveScroll: boolean = false): void => {
         router.visit(route('products.list', filter.value), {
             preserveState: true,
             preserveScroll: preserveScroll
         });
     }
 
-    const loadDataFromFirstPage = () => {
+    const loadDataFromFirstPage = (): void => {
         filter.value.page = 1;
         loadDataWithCurrentFilter();
     }

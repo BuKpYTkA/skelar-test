@@ -4,11 +4,11 @@
     import RightArrowIcon from "@/Components/Icons/RightArrowIcon.vue";
     import LeftArrowIcon from "@/Components/Icons/LeftArrowIcon.vue";
 
-    const DEFAULT_NUMBER_OF_DYNAMIC_PAGES = 3;
-    const ACTIVE_PAGE_CLASS_LIST = 'relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm' +
+    const DEFAULT_NUMBER_OF_DYNAMIC_PAGES: number = 3;
+    const ACTIVE_PAGE_CLASS_LIST: string = 'relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm' +
         ' font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2' +
         ' focus-visible:outline-offset-2 focus-visible:outline-indigo-600';
-    const DEFAULT_PAGE_CLASS_LIST = 'relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900' +
+    const DEFAULT_PAGE_CLASS_LIST: string = 'relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900' +
         ' ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex'
 
     const props = defineProps<{

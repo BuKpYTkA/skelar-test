@@ -16,7 +16,7 @@
         return props.product.price / 100;
     });
 
-    const deleteProduct = () => {
+    const deleteProduct = (): void => {
         axios.delete(route('products.delete', {
             product: props.product.id
         })).then(() => emit('deleted'));

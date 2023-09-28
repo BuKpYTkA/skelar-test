@@ -20,6 +20,7 @@ class ProductController extends Controller
 
     public function list(GetProductsListRequest $request): Response
     {
+        // totally unnecessary in this case, but I guess it won't hurt anyone :)
         $productsPaginator = $this->productRepository->getQueryByFilter($request)
             ->with(['category', 'user'])
             ->latest()
@@ -34,6 +35,7 @@ class ProductController extends Controller
     public function create(): Response
     {
         return Inertia::render('CreateProduct', [
+            // could be paginated for scroll-loading dropdown
             'categories' => Category::all()
         ]);
     }
@@ -53,6 +55,7 @@ class ProductController extends Controller
 
         return Inertia::render('UpdateProduct', [
             'product' => ProductResource::make($product),
+            // could be paginated for scroll-loading dropdown
             'categories' => Category::all()
         ]);
     }

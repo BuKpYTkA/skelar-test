@@ -14,7 +14,7 @@ Route::middleware('auth')->group(static function () {
 
         Route::prefix('{product}')->group(static function () {
             Route::get('/', [ProductController::class, 'update'])->name('update');
-            Route::put('/', [ProductController::class, 'save'])->name('save');
+            Route::post('/', [ProductController::class, 'save'])->name('save');
             Route::delete('/', [ProductController::class, 'delete'])->name('delete');
         });
     });

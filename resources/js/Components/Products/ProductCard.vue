@@ -4,6 +4,8 @@
     import {Link} from '@inertiajs/vue3';
     import axios from "axios";
 
+    const DEFAULT_IMAGE_URL = 'https://placehold.co/600x400';
+
     const props = defineProps<{
         product: Product
     }>();
@@ -25,7 +27,7 @@
 
 <template>
     <div class="max-w-sm rounded overflow-hidden shadow-lg mb-4 flex flex-col">
-        <img class="w-full" src="https://placehold.co/600x400" alt="Sunset in the mountains">
+        <img class="w-full product_logo" :src="product.logo_url || DEFAULT_IMAGE_URL" alt="Sunset in the mountains">
         <div class="px-6 py-4">
             <div class="font-bold text-xl mb-2">{{ product.title }}</div>
             <p class="text-gray-700 text-base card_description">
@@ -68,5 +70,19 @@
         white-space: nowrap;
         width: 100%;
         text-overflow: ellipsis;
+    }
+
+    .product_logo {
+        min-height: 256px;
+        max-height: 256px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .product_logo {
+            min-height: 150px;
+            max-height: 150px;
+        }
+
     }
 </style>

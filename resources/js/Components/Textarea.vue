@@ -1,14 +1,8 @@
 <script lang="ts" setup>
-    const props = withDefaults(defineProps<{
-        type?: string,
-        error?: boolean,
-        errorMessages?: Array<string>,
-        label?: string,
-        placeholder?: string,
-        modelValue: string,
-    }>(), {
+    import {TextInputProps} from "@/types/Input";
+
+    const props = withDefaults(defineProps<TextInputProps>(), {
         type: 'text',
-        required: false,
         error: false,
         errorMessages: () => [],
         label: '',

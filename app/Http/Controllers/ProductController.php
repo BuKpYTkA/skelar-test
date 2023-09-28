@@ -8,13 +8,17 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Utils\Repositories\ProductRepository;
+use App\Utils\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProductController extends Controller
 {
-    public function __construct(private readonly ProductRepository $productRepository)
+    public function __construct(
+        private readonly ProductRepository $productRepository,
+        private readonly ProductService $productService
+    )
     {
     }
 
@@ -22,7 +26,7 @@ class ProductController extends Controller
     {
         // totally unnecessary in this case, but I guess it won't hurt anyone :)
         $productsPaginator = $this->productRepository->getQueryByFilter($request)
-            ->with(['category', 'user'])
+            ->with(['category', 'user', 'media'])
             ->latest()
             ->paginate()
             ->through(fn($product) => ProductResource::make($product));
@@ -42,9 +46,10 @@ class ProductController extends Controller
 
     public function store(CreateUpdateProductRequest $request): ProductResource
     {
-        $product = Product::query()->create(array_merge($request->validated(), [
-            'user_id' => $request->user()->getKey()
-        ]));
+        $product = Product::query()->create($request->getInsertData());
+        if ($request->logoUpdated()) {
+            $this->productService->setLogo($product, $request->getLogo());
+        }
 
         return ProductResource::make($product);
     }
@@ -62,7 +67,10 @@ class ProductController extends Controller
 
     public function save(Product $product, CreateUpdateProductRequest $request): ProductResource
     {
-        $product->update($request->validated());
+        $product->update($request->getInsertData());
+        if ($request->logoUpdated()) {
+            $this->productService->setLogo($product, $request->getLogo());
+        }
 
         return ProductResource::make($product);
     }

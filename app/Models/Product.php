@@ -6,6 +6,8 @@ use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property string $title
@@ -17,9 +19,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property Category|null $category
  * @property User $user
  */
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
+
+    const MEDIA_COLLECTION_LOGO = 'logo';
 
     protected $fillable = [
         'title',
@@ -27,6 +31,10 @@ class Product extends Model
         'price',
         'category_id',
         'user_id'
+    ];
+
+    protected $hidden = [
+        'media'
     ];
 
     public function category(): BelongsTo
@@ -42,5 +50,12 @@ class Product extends Model
     public function scopeSearch(Builder $query, string $search): void
     {
         $query->where('title', 'like', "%$search%");
+    }
+
+    public function getLogoUrlWhenLoaded(): ?string
+    {
+        return $this->relationLoaded('media')
+            ? $this->media->where('collection_name', self::MEDIA_COLLECTION_LOGO)->first()?->getUrl()
+            : null;
     }
 }

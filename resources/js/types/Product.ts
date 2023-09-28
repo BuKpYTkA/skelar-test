@@ -9,6 +9,7 @@ export interface Product {
     category_id: number | null,
     user_id: number,
     created_at: string,
+    logo_url: string | null
 
     user: User,
     category: Category | null

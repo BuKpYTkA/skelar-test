@@ -1,50 +1,31 @@
 <script lang="ts" setup>
     import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
     import {Category} from "@/types/Category";
-    import {ref} from "vue";
     import Input from "@/Components/Input.vue";
     import BaseDropdown from "@/Components/BaseDropdown.vue";
     import Textarea from "@/Components/Textarea.vue";
-    import {router} from "@inertiajs/vue3";
-    import axios from "axios";
     import {Product} from "@/types/Product";
+    import FileUploader from "@/Components/FileUploader.vue";
+    import {useManageProduct} from "@/composables/useManageProduct";
 
     const props = defineProps<{
         categories: Category[],
         product: Product
     }>();
 
-    const formData = ref<{
-        title: string,
-        description: string | null,
-        category_id: number | null,
-        price: number
-    }>({
+    const {
+        formData,
+        errorMessages,
+        onLogoUpdated,
+        onSubmit
+    } = useManageProduct(route('products.save', {
+        product: props.product.id
+    }), {
         title: props.product.title,
         description: props.product.description,
         category_id: props.product.category_id,
-        price: props.product.price
+        price: props.product.price,
     });
-
-    const errorMessages = ref<{
-        title: Array<string>,
-        description: Array<string>,
-        category_id: Array<string>,
-        price: Array<string>,
-    }>({
-        title: [],
-        description: [],
-        category_id: [],
-        price: []
-    });
-
-    const onSubmit = () => {
-        axios.put(route('products.save', {
-            product: props.product.id
-        }), formData.value)
-            .then(() => router.visit(route('products.list')))
-            .catch(({response}) => Object.assign(errorMessages.value, response.data.errors));
-    };
 
     const onReset = () => {
         formData.value.title = props.product.title;
@@ -83,6 +64,13 @@
                 :error-messages="errorMessages.category_id"
                 :error="!!errorMessages.category_id.length"
                 label="Category"
+            />
+            <FileUploader
+                accept="image/*"
+                @updated="onLogoUpdated"
+                label="Logo"
+                :error-messages="errorMessages.logo"
+                :error="!!errorMessages.logo.length"
             />
             <Textarea
                 label="Description"

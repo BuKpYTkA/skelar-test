@@ -1,46 +1,24 @@
 <script lang="ts" setup>
     import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
     import {Category} from "@/types/Category";
-    import {ref} from "vue";
     import Input from "@/Components/Input.vue";
     import BaseDropdown from "@/Components/BaseDropdown.vue";
     import Textarea from "@/Components/Textarea.vue";
-    import {router} from "@inertiajs/vue3";
-    import axios from "axios";
+    import FileUploader from "@/Components/FileUploader.vue";
+    import {useManageProduct} from "@/composables/useManageProduct.ts";
 
     const props = defineProps<{
         categories: Category[]
     }>();
 
-    const formData = ref<{
-        title: string,
-        description: string | null,
-        category_id: number | null,
-        price: number
-    }>({
-        title: '',
-        description: '',
-        category_id: null,
-        price: 0
+    const {
+        formData,
+        errorMessages,
+        onLogoUpdated,
+        onSubmit
+    } = useManageProduct(route('products.store'), {
+        logo_updated: true
     });
-
-    const errorMessages = ref<{
-        title: Array<string>,
-        description: Array<string>,
-        category_id: Array<string>,
-        price: Array<string>,
-    }>({
-        title: [],
-        description: [],
-        category_id: [],
-        price: []
-    });
-
-    const onSubmit = () => {
-        axios.post(route('products.store'), formData.value)
-            .then(() => router.visit(route('products.list')))
-            .catch(({ response }) => Object.assign(errorMessages.value, response.data.errors));
-    };
 
 </script>
 
@@ -72,6 +50,13 @@
                 :error-messages="errorMessages.category_id"
                 :error="!!errorMessages.category_id.length"
                 label="Category"
+            />
+            <FileUploader
+                accept="image/*"
+                @updated="onLogoUpdated"
+                label="Logo"
+                :error-messages="errorMessages.logo"
+                :error="!!errorMessages.logo.length"
             />
             <Textarea
                 label="Description"

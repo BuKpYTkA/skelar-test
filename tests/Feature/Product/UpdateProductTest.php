@@ -29,7 +29,8 @@ class UpdateProductTest extends AuthenticatedRequestTest
 
     public function testSuccess(): void
     {
-        $categories = Category::factory(3)->create();
+        Category::factory(3)->create();
+        $categories = Category::all();
 
         $response = $this->checkRequestHasCode();
         $responseCategories = $this->collectItemsFromResponse($response, 'categories');

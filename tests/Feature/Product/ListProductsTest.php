@@ -5,6 +5,7 @@ namespace Tests\Feature\Product;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\AuthenticatedRequestTest;
 
@@ -25,8 +26,8 @@ class ListProductsTest extends AuthenticatedRequestTest
         $products = Product::factory(3)->create();
         $response = $this->checkRequestHasCode();
 
-        $resultItems = $this->collectItemsFromResponse($response, 'props.paginator.data');
-        $this->assertResponseComponent($response);
+        $resultItems = $this->collectItemsFromResponse($response, 'paginator.data');
+        $this->assertComponent($response);
         $this->assertCount($products->count(), $resultItems);
         $this->assertCollectionsContainSameValues($products->pluck('id'), $resultItems->pluck('id'));
     }
@@ -43,8 +44,8 @@ class ListProductsTest extends AuthenticatedRequestTest
             'search' => $search
         ]);
 
-        $resultItems = $this->collectItemsFromResponse($response, 'props.paginator.data');
-        $this->assertResponseComponent($response);
+        $resultItems = $this->collectItemsFromResponse($response, 'paginator.data');
+        $this->assertComponent($response);
         $this->assertCount($searchableProducts->count(), $resultItems);
         $this->assertCollectionsContainSameValues($searchableProducts->pluck('id'), $resultItems->pluck('id'));
     }
@@ -61,8 +62,8 @@ class ListProductsTest extends AuthenticatedRequestTest
             'category_id' => $categoryId
         ]);
 
-        $resultItems = $this->collectItemsFromResponse($response, 'props.paginator.data');
-        $this->assertResponseComponent($response);
+        $resultItems = $this->collectItemsFromResponse($response, 'paginator.data');
+        $this->assertComponent($response);
         $this->assertCount($searchableProducts->count(), $resultItems);
         $this->assertCollectionsContainSameValues($searchableProducts->pluck('id'), $resultItems->pluck('id'));
     }
@@ -82,9 +83,14 @@ class ListProductsTest extends AuthenticatedRequestTest
             'category_id' => $categoryId,
         ]);
 
-        $resultItems = $this->collectItemsFromResponse($response, 'props.paginator.data');
-        $this->assertResponseComponent($response);
+        $resultItems = $this->collectItemsFromResponse($response, 'paginator.data');
+        $this->assertComponent($response);
         $this->assertCount($searchableProducts->count(), $resultItems);
         $this->assertCollectionsContainSameValues($searchableProducts->pluck('id'), $resultItems->pluck('id'));
+    }
+
+    private function assertComponent(TestResponse $response)
+    {
+        $this->assertResponseComponent($response, 'Products');
     }
 }

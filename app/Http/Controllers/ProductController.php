@@ -49,6 +49,7 @@ class ProductController extends Controller
         $product = Product::query()->create($request->getInsertData());
         if ($request->logoUpdated()) {
             $this->productService->setLogo($product, $request->getLogo());
+            $product->load('media');
         }
 
         return ProductResource::make($product);
@@ -70,6 +71,7 @@ class ProductController extends Controller
         $product->update($request->getInsertData());
         if ($request->logoUpdated()) {
             $this->productService->setLogo($product, $request->getLogo());
+            $product->load('media');
         }
 
         return ProductResource::make($product);

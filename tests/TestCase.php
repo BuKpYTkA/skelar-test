@@ -28,14 +28,14 @@ abstract class TestCase extends BaseTestCase
         $this->assertTrue($result, 'Failed Asserting that collection ' . $actual . ' is same as ' . $expected);
     }
 
-    protected function assertResponseComponent(TestResponse $response): void
+    protected function assertResponseComponent(TestResponse $response, string $component): void
     {
-        $this->assertEquals('Products', $this->getViewData($response, 'component'));
+        $this->assertEquals($component, $this->getViewData($response, 'component'));
     }
 
     protected function collectItemsFromResponse(TestResponse $response, $key): Collection
     {
-        return collect($this->getViewData($response, $key));
+        return collect($this->getViewData($response, 'props.' . $key));
     }
 
     protected function getViewData(TestResponse $response, string $key): mixed

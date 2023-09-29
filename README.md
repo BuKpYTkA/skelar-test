@@ -70,23 +70,14 @@ Otherwise:
 make up
 ````
 
+Your application will be available on <code>http://127.0.0.1:8090</code>
+
 To open application bash run:
 ````bash
 make app_bash
 ````
 
-<b>To compile assets, use your local <code>npm</code></b><br>
-Install npm dependencies:
-````bash
-npm i
-````
-
-Compile assets:
-````bash
-npm run dev
-````
-
-Your application will be available on <code>http://127.0.0.1:8090</code>
+<b>Use your local <code>npm</code></b> to be able to use <code>npm run dev</code> command.<br>
 
 After you installed the project, your database credentials will be 
 #### Username: root

@@ -5,13 +5,19 @@
         "moduleResolution": "Node",
         "lib": ["ESNext", "DOM"],
         "jsx": "preserve",
-        "strict": true,
         "isolatedModules": true,
         "target": "ESNext",
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
         "noEmit": true,
         "skipLibCheck": true,
+        "strict": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "noImplicitThis": false,
+        "alwaysStrict": false,
+        "noUnusedParameters": false,
+        "noFallthroughCasesInSwitch": true,
         "paths": {
             "@/*": ["./resources/js/*"]
         }

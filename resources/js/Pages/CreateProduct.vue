@@ -5,7 +5,7 @@
     import BaseDropdown from "@/Components/BaseDropdown.vue";
     import Textarea from "@/Components/Textarea.vue";
     import FileUploader from "@/Components/FileUploader.vue";
-    import {useManageProduct} from "@/composables/useManageProduct.ts";
+    import {useManageProduct} from "@/composables/useManageProduct";
 
     const props = defineProps<{
         categories: Category[]

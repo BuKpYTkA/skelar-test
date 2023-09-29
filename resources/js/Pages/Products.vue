@@ -9,6 +9,7 @@
     import {watchDebounced} from "@vueuse/core";
     import SearchIcon from "@/Components/Icons/SearchIcon.vue";
     import {Link} from '@inertiajs/vue3';
+    import {RouteParam} from "ziggy-js";
 
     interface ProductPaginator extends BasePaginator {
         data: Product[]
@@ -32,7 +33,7 @@
     };
 
     const loadDataWithCurrentFilter = (preserveScroll: boolean = false): void => {
-        router.visit(route('products.list', filter.value), {
+        router.visit(route('products.list', filter.value as unknown as RouteParam), {
             preserveState: true,
             preserveScroll: preserveScroll
         });

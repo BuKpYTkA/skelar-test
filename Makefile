@@ -23,6 +23,8 @@ set_up:
 	${DOCKER_COMPOSE_PHP} php artisan storage:link
 	${DOCKER_COMPOSE_PHP} php artisan db:seed --class=DemoSeeder
 	${DOCKER_COMPOSE_PHP} touch database/database.sqlite
+	${DOCKER_COMPOSE_PHP} npm i
+	${DOCKER_COMPOSE_PHP} npm run build
 
 ##################
 # App

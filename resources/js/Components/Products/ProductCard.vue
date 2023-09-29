@@ -41,7 +41,7 @@
             <div class="px-6 pb-2 flex justify-between mt-auto">
                 <span v-if="product.category_id"
                       class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">{{
-                        product.category.title
+                        product.category?.title
                     }}</span>
                 <p class="inline-block ml-auto px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                     {{ product.user.name }}</p>

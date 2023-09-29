@@ -28,7 +28,7 @@ php artisan storage:link
 
 <b>Important:</b><br>
 This application uses <code>spatie/laravel-medialibrary</code> library.
-You have to set up correct <code>APP_URL</code> to be able to use local storage. 
+You have to set up correct <code>APP_URL</code> to be able to use local storage and vite watcher 
 By default, it's <code>http://127.0.0.1:8000</code>
 
 Create demo data:
@@ -50,6 +50,8 @@ Compile assets:
 ````bash
 npm run dev
 ````
+
+<b>DONT FORGET TO SET UP CORRECT <code>APP_URL</code> in your <code>.env</code> file.
 
 Start local server:
 ````bash

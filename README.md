@@ -1,6 +1,4 @@
 # Installation
-<hr>
-
 ## Basic
 
 Copy .env file:
@@ -77,7 +75,27 @@ To open application bash run:
 make app_bash
 ````
 
+<b>To compile assets, use your local <code>npm</code></b><br>
+Install npm dependencies:
+````bash
+npm i
+````
+
+Compile assets:
+````bash
+npm run dev
+````
+
+Your application will be available on <code>http://127.0.0.1:8090</code>
+
 After you installed the project, your database credentials will be 
 #### Username: root
 #### Password: root
 #### Port: 3307
+
+# Tests
+
+Run tests:
+````bash
+php artisan test
+````

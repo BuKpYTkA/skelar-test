@@ -28,6 +28,11 @@ To be able to use local storage you have to run:
 php artisan storage:link
 ````
 
+<b>Important:</b><br>
+This application uses <code>spatie/laravel-medialibrary</code> library.
+You have to set up correct <code>APP_URL</code> to be able to use local storage. 
+By default, it's <code>http://127.0.0.1:8000</code>
+
 Create demo data:
 ````bash
 php artisan db:seed --class=DemoSeeder
